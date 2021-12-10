@@ -14,19 +14,21 @@ var App = {
     // Fetch initial batch of messages
     App.startSpinner();
     App.fetch(App.stopSpinner);
-    App.stopSpinner();
 
-    // get new messages every 3 sec
+
+    // Poll for new messages every 3 sec
     setInterval(App.fetch, 3000);
-
   },
 
   fetch: function(callback = ()=>{}) {
     Parse.readAll((data) => {
-      // examine the response from the server request:
-      Messages.update(data.results);
-      Rooms.update();
+      // Don't bother to update if we have no messages
+      if (data && data.length) {
+        Rooms.update(data, RoomsView.render);
+        Messages.update(data, MessagesView.render);
+      }
       callback();
+      return;
     });
   },
 

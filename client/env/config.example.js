@@ -3,8 +3,8 @@
 
 // Put your parse application keys here!
 $.ajaxPrefilter(function (settings, _, jqXHR) {
-  jqXHR.setRequestHeader('Authorization', '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');
+  jqXHR.setRequestHeader('Authorization', 'GITHUB_API_TOKEN');
 });
 
 // Put your campus prefix here
-window.CAMPUS = 'hr-sfo';
+window.CAMPUS = 'FILL_ME_IN';

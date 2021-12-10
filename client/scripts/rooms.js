@@ -1,42 +1,42 @@
 var Rooms = {
 
-  _list: new Set(),
-  _selectedRoom: '',
 
-  initialize: function() {
+  _data: new Set,
+
+  selected: 'lobby',
+
+  items: function() {
+    return _.chain([...Rooms._data]);
   },
 
-  update: function() {
-    Messages.get().forEach(function(message) {
-      Rooms._list.add(message.roomname);
-    });
-    // update the Rooms list
-    RoomsView.render();
-
+  isSelected: function(roomname) {
+    return roomname === Rooms.selected ||
+           !roomname && Rooms.selected === 'lobby';
   },
 
-  get: function() {
-    return [...Rooms._list.values()].sort();
-
+  add: function(room, callback = ()=>{}) {
+    Rooms._data.add(room);
+    Rooms.selected = room;
+    callback(Rooms.items());
   },
 
-  add: function(room) {
-    Rooms._list.add(room);
-    Rooms.setSelectedRoom(room);
-    // update the Rooms list
-    RoomsView.render();
+  update: function(messages, callback = ()=>{}) {
+    var length = Rooms._data.size;
 
-  },
+    _.chain(messages)
+      .pluck('roomname')
+      .uniq()
+      .each(room => Rooms._data.add(room));
 
-  getSelectedRoom: function() {
-    return Rooms._selectedRoom;
+    if (Rooms.selected === null) {
+      // make the first room the default selected room
+      Rooms.selected = Rooms._data.values().next().value;
+    }
 
-  },
-
-  setSelectedRoom: function(room) {
-    Rooms._selectedRoom = room;
-    MessagesView.render();
-
+    // only invoke the callback if something changed
+    if (Rooms._data.size !== length) {
+      callback(Rooms.items());
+    }
   }
-
+  
 };

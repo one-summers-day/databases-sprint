@@ -9,15 +9,19 @@ var FormView = {
   handleSubmit: function(event) {
     // Stop the browser from submitting the form
     event.preventDefault();
-    var message = {};
+    
 
-    message['username'] = App.username;
-    message['text'] = $('#message').val();
-    message['roomname'] = $('#rooms select').val();
-    Parse.create(message);
+    var message = {
+      username: App.username,
+      text: FormView.$form.find('#message').val(),
+      roomname: Rooms.selected || 'lobby'
+    };
 
-    console.log('click!');
-  },
+    Parse.create(message, (data) => {
+      _.extend(message, data[0]);
+      Messages.add(message, MessagesView.render);
+    });
+      },
 
   setStatus: function(active) {
     var status = active ? 'true' : null;

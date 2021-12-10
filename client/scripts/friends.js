@@ -1,21 +1,24 @@
 var Friends = {
 
-  _friendsList: new Set(),
 
-  toggleStatus: function(friend) {
-    if( !Friends.isFriend(friend) ) {
-      Friends._friendsList.add(friend);
+  _data: new Set,
 
-    } else {
-      Friends._friendsList.delete(friend);
-    }
-
-    MessagesView.render();
-
+  items: function() {
+    return _.chain([...Friends._data]);
   },
 
-  isFriend: function(friend){
-    return Friends._friendsList.has(friend);
-  }
+  isFriend: function(name) {
+    return Friends._data.has(name);
+  },
 
+  toggleStatus: function(name, callback = ()=>{}) {
+    if (Friends._data.has(name)) {
+      Friends._data.delete(name);
+      callback(false);
+    } else {
+      Friends._data.add(name);
+      callback(true);
+    }
+  }
+  
 };
